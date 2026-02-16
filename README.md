@@ -1,6 +1,6 @@
 # Local LLM-as-Judge Annotator
 
-로컬 환경에서만 실행하는 React 기반 annotator 프로젝트입니다.
+로컬 환경에서 실행하는 React 기반 annotator 프로젝트입니다.
 
 ## Folder Structure
 
