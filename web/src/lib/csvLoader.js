@@ -2,13 +2,10 @@ import Papa from 'papaparse'
 
 const INPUT_REQUIRED_COLUMNS = ['item_id', 'question', 'answer', 'response']
 
-function readFileAsText(file) {
-  return file.text()
-}
-
 function parseCsvText(text) {
   const parsed = Papa.parse(text, {
     header: true,
+    delimiter: ',',
     skipEmptyLines: true,
     transformHeader: (header) => header.trim(),
   })
@@ -24,14 +21,16 @@ function parseCsvText(text) {
 function normalizeItemIdColumn(rawRow) {
   const row = { ...rawRow }
 
-  // Source dataset uses an empty-header first column. Normalize it to item_id.
   if ((row.item_id === undefined || row.item_id === null || row.item_id === '') && row[''] !== undefined) {
     row.item_id = row['']
   }
 
   delete row['']
-
   return row
+}
+
+function normalizeRows(rows) {
+  return rows.map(normalizeItemIdColumn)
 }
 
 function assertRequiredColumns(rows, requiredColumns, csvName) {
@@ -67,33 +66,63 @@ function assertUniqueItemId(rows, csvName) {
   })
 }
 
-export async function loadInputCsv(file) {
-  const text = await readFileAsText(file)
-  const parsedRows = parseCsvText(text).map(normalizeItemIdColumn)
+function looksLikeHtml(text) {
+  const head = text.trimStart().slice(0, 200).toLowerCase()
+  return head.startsWith('<!doctype html') || head.startsWith('<html')
+}
 
-  assertRequiredColumns(parsedRows, INPUT_REQUIRED_COLUMNS, 'Input CSV')
-  assertItemId(parsedRows, 'Input CSV')
-  assertUniqueItemId(parsedRows, 'Input CSV')
+async function fetchCsvText(path, options = {}) {
+  const { optional = false } = options
+  const response = await fetch(path)
+
+  if (!response.ok) {
+    if (optional && response.status === 404) {
+      return null
+    }
+    throw new Error(`Failed to fetch ${path} (HTTP ${response.status})`)
+  }
+
+  const text = await response.text()
+
+  // In dev mode, missing static files may resolve to index.html (status 200).
+  if (looksLikeHtml(text)) {
+    if (optional) {
+      return null
+    }
+    throw new Error(`Expected CSV but received HTML at ${path}. Check file path/publicDir.`)
+  }
+
+  return text
+}
+
+export async function loadInputCsvFromPath(path, csvName = 'Input CSV') {
+  const text = await fetchCsvText(path, { optional: false })
+  const parsedRows = normalizeRows(parseCsvText(text))
+
+  assertRequiredColumns(parsedRows, INPUT_REQUIRED_COLUMNS, csvName)
+  assertItemId(parsedRows, csvName)
+  assertUniqueItemId(parsedRows, csvName)
 
   return parsedRows
 }
 
-export async function loadExistingOutputCsv(file) {
-  if (!file) {
+export async function loadExistingOutputCsvFromPath(path, csvName = 'Existing output CSV') {
+  const text = await fetchCsvText(path, { optional: true })
+
+  if (text === null) {
     return []
   }
 
-  const text = await readFileAsText(file)
-  const parsedRows = parseCsvText(text).map(normalizeItemIdColumn)
+  const parsedRows = normalizeRows(parseCsvText(text))
 
   if (parsedRows.length === 0) {
     return []
   }
 
-  assertRequiredColumns(parsedRows, ['item_id'], 'Existing output CSV')
-  assertItemId(parsedRows, 'Existing output CSV')
+  assertRequiredColumns(parsedRows, ['item_id'], csvName)
+  assertItemId(parsedRows, csvName)
 
   return parsedRows
 }
 
-export { parseCsvText }
+export { parseCsvText, normalizeRows }
