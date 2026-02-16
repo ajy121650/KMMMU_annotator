@@ -1,0 +1,20 @@
+# Node
+node_modules/
+.next/
+dist/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Env / IDE
+.env
+.env.*
+.vscode/
+.DS_Store
+
+# Data outputs
+*.sqlite3
+*.db
+coverage/
