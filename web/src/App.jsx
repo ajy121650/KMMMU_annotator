@@ -83,6 +83,12 @@ function getItemId(row) {
   return String(row?.item_id ?? "");
 }
 
+function formatElapsed(seconds) {
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+  return `${mm}:${ss}`;
+}
+
 function App() {
   const [datasets, setDatasets] = useState(() =>
     DATASETS.reduce((acc, dataset) => {
@@ -104,6 +110,7 @@ function App() {
   const [statusMessage, setStatusMessage] = useState("");
   const [zoomImageUrl, setZoomImageUrl] = useState("");
   const [failedImageUrls, setFailedImageUrls] = useState({});
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const [annotationsByDataset, setAnnotationsByDataset] = useState(() =>
     DATASETS.reduce((acc, dataset) => {
@@ -176,6 +183,18 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const next = Math.max(
+        0,
+        Math.floor((Date.now() - itemOpenedAtRef.current) / 1000),
+      );
+      setElapsedSeconds(next);
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   const selectedDataset = datasets[selectedDatasetKey];
   const selectedRows = selectedDataset?.rows ?? [];
   const maxIndex = Math.max(selectedRows.length - 1, 0);
@@ -207,6 +226,7 @@ function App() {
     });
 
     itemOpenedAtRef.current = Date.now();
+    setElapsedSeconds(0);
     setZoomImageUrl("");
     setFailedImageUrls({});
   }, [selectedDatasetKey, safeCurrentIndex, currentItemId]);
@@ -291,6 +311,7 @@ function App() {
       `저장 완료: ${selectedDatasetKey} / item_id=${currentItemId}`,
     );
     itemOpenedAtRef.current = Date.now();
+    setElapsedSeconds(0);
   };
 
   const exportMerged = () => {
@@ -565,15 +586,20 @@ function App() {
               />
             </section>
 
+            <section className="time-box">
+              <span>판정 시간</span>
+              <strong>{formatElapsed(elapsedSeconds)}</strong>
+            </section>
+
             <section className="actions">
               <button type="button" onClick={saveCurrentAnnotation}>
                 Save Annotation
               </button>
               <button type="button" onClick={() => moveIndex(-1)}>
-                {"<"} Previous
+                Previous
               </button>
               <button type="button" onClick={() => moveIndex(1)}>
-                Next {">"}
+                Next
               </button>
               <span>
                 completed: {completedCount}/{recordCount}

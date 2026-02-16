@@ -216,6 +216,16 @@ pre {
   gap: 8px;
 }
 
+.time-box {
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 10px;
+  background: #f6f6f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .error {
   color: #9b1c1c;
   margin: 0;
