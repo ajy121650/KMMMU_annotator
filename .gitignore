@@ -18,3 +18,9 @@ __pycache__/
 *.sqlite3
 *.db
 coverage/
+
+# Custom ignores
+data/
+llm-as-judge-dataset/
+example_image.png
+
