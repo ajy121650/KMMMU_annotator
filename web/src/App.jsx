@@ -36,6 +36,7 @@ const DATASETS = [
 const EMPTY_FORM = {
   human_judgement: "",
   question_type_match: "",
+  visual_type_check: "",
   comment: "",
 };
 
@@ -222,6 +223,7 @@ function App() {
     setForm({
       human_judgement: currentAnnotation?.human_judgement ?? "",
       question_type_match: currentAnnotation?.question_type_match ?? "",
+      visual_type_check: currentAnnotation?.visual_type_check ?? "",
       comment: currentAnnotation?.comment ?? "",
     });
 
@@ -272,8 +274,14 @@ function App() {
   const saveCurrentAnnotation = () => {
     if (!currentRow) return;
 
-    if (!form.human_judgement || !form.question_type_match) {
-      setStatusMessage("판정과 문제유형 일치 여부를 모두 선택해주세요.");
+    if (
+      !form.human_judgement ||
+      !form.question_type_match ||
+      !form.visual_type_check
+    ) {
+      setStatusMessage(
+        "판정, 문제유형 검사, 이미지 타입 검사를 모두 선택해주세요.",
+      );
       return;
     }
 
@@ -287,6 +295,7 @@ function App() {
       annotator_id: annotatorId,
       human_judgement: form.human_judgement,
       question_type_match: form.question_type_match,
+      visual_type_check: form.visual_type_check,
       comment: form.comment,
       time_spent_sec: elapsedSec,
       updated_at: new Date().toISOString(),
@@ -460,6 +469,10 @@ function App() {
                 </div>
               </div>
             )}
+            <p>
+              <strong>image type(첫번째 사진 기준):</strong>{" "}
+              {currentRow.visual_type || "-"}
+            </p>
 
             <h3>Model Response</h3>
             <pre>{currentRow.response}</pre>
@@ -563,6 +576,54 @@ function App() {
                       setForm((prev) => ({
                         ...prev,
                         question_type_match: "unsure",
+                      }))
+                    }
+                  />
+                  unsure
+                </label>
+              </div>
+            </section>
+
+            <section className="box">
+              <h3>이미지 타입 검사</h3>
+              <div className="options">
+                <label>
+                  <input
+                    type="radio"
+                    name="visual_type_check"
+                    checked={form.visual_type_check === "match"}
+                    onChange={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        visual_type_check: "match",
+                      }))
+                    }
+                  />
+                  match
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="visual_type_check"
+                    checked={form.visual_type_check === "mismatch"}
+                    onChange={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        visual_type_check: "mismatch",
+                      }))
+                    }
+                  />
+                  mismatch
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="visual_type_check"
+                    checked={form.visual_type_check === "unsure"}
+                    onChange={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        visual_type_check: "unsure",
                       }))
                     }
                   />
