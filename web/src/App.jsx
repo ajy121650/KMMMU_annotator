@@ -467,9 +467,6 @@ function App() {
             <p>
               <strong>Model Answer:</strong> {currentRow.model_answer || "-"}
             </p>
-            <p>
-              <strong>item_id:</strong> {currentItemId}
-            </p>
           </div>
 
           <div className="right-panel">
