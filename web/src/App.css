@@ -6,9 +6,9 @@
 .app {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 22px;
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .topbar {
@@ -27,7 +27,7 @@
 .inline-controls label {
   display: grid;
   gap: 4px;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 input,
@@ -40,13 +40,13 @@ input,
 textarea {
   border: 1px solid #c7c7c7;
   border-radius: 6px;
-  padding: 8px;
+  padding: 9px;
 }
 
 button {
   border: 1px solid #888;
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 9px 13px;
   background: #efefef;
   cursor: pointer;
 }
@@ -130,8 +130,8 @@ button {
 
 .image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
 }
 
 .image-thumb {
@@ -139,22 +139,23 @@ button {
   border: 1px solid #d1d1d1;
   border-radius: 6px;
   overflow: hidden;
-  background: #fff;
+  background: #f7f7f7;
 }
 
 .image-thumb img {
   display: block;
   width: 100%;
-  height: 120px;
-  object-fit: cover;
+  height: 220px;
+  object-fit: contain;
+  background: #f7f7f7;
 }
 
 .image-fallback {
   width: 100%;
-  height: 120px;
+  height: 220px;
   display: grid;
   place-items: center;
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
   background: #f1f1f1;
 }
