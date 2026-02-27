@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 
-const INPUT_REQUIRED_COLUMNS = ['item_id', 'question', 'answer', 'response']
+const INPUT_REQUIRED_COLUMNS = ['question', 'answer', 'response', 'model_answer']
 
 function parseCsvText(text) {
   const parsed = Papa.parse(text, {
@@ -18,11 +18,16 @@ function parseCsvText(text) {
   return parsed.data
 }
 
-function normalizeItemIdColumn(rawRow) {
+function normalizeItemIdColumn(rawRow, index) {
   const row = { ...rawRow }
 
   if ((row.item_id === undefined || row.item_id === null || row.item_id === '') && row[''] !== undefined) {
     row.item_id = row['']
+  }
+
+  // New CSVs may not include an explicit item_id column.
+  if (row.item_id === undefined || row.item_id === null || row.item_id === '') {
+    row.item_id = String(index)
   }
 
   delete row['']
@@ -30,7 +35,7 @@ function normalizeItemIdColumn(rawRow) {
 }
 
 function normalizeRows(rows) {
-  return rows.map(normalizeItemIdColumn)
+  return rows.map((row, index) => normalizeItemIdColumn(row, index))
 }
 
 function assertRequiredColumns(rows, requiredColumns, csvName) {

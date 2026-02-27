@@ -421,6 +421,9 @@ function App() {
           <div className="left-panel">
             <h2>Question</h2>
             <pre>{currentRow.question}</pre>
+            <p>
+              <strong>Question Type:</strong> {currentRow.question_type || "-"}
+            </p>
 
             {imageLinks.length > 0 && (
               <div>
@@ -462,11 +465,7 @@ function App() {
             <pre>{currentRow.response}</pre>
 
             <p>
-              <strong>Question Type:</strong> {currentRow.question_type || "-"}
-            </p>
-            <p>
-              <strong>LLM Judge(is_correct):</strong>{" "}
-              {String(currentRow.is_correct ?? "-")}
+              <strong>Model Answer:</strong> {currentRow.model_answer || "-"}
             </p>
             <p>
               <strong>item_id:</strong> {currentItemId}
