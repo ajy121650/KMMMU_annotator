@@ -10,25 +10,25 @@ const DATASETS = [
   {
     key: "gpt-5-mini",
     label: "gpt-5-mini",
-    inputPath: "/input/gpt-5-mini-1-llm-judge.csv",
+    inputPath: "/input/gpt-5-mini-llm-judge.csv",
     outputPath: "/output/gpt-5-mini-annotations.csv",
   },
   {
     key: "qwen3-2b",
     label: "qwen3-2b",
-    inputPath: "/input/qwen3-VL-2b-it-1-llm-judge.csv",
+    inputPath: "/input/qwen3-VL-2b-it-llm-judge.csv",
     outputPath: "/output/qwen3-2b-annotations.csv",
   },
   {
     key: "qwen3-30b",
     label: "qwen3-30b",
-    inputPath: "/input/qwen3-VL-30b-it-1-llm-judge.csv",
+    inputPath: "/input/qwen3-VL-30b-it-llm-judge.csv",
     outputPath: "/output/qwen3-30b-annotations.csv",
   },
   {
     key: "varco2-14b",
     label: "varco2-14b",
-    inputPath: "/input/varco2-14b-1-llm-judge.csv",
+    inputPath: "/input/varco2-14b-llm-judge.csv",
     outputPath: "/output/varco2-14b-annotations.csv",
   },
 ];
